@@ -2,9 +2,10 @@
 
 namespace RonasIT\Support\AutoDoc\Tests\PhpUnitExtensions;
 
-use PHPUnit\Runner\AfterLastTestHook;
-use Illuminate\Foundation\Application;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Foundation\Application;
+use PHPUnit\Runner\AfterLastTestHook;
 use RonasIT\Support\AutoDoc\Services\SwaggerService;
 
 /**
@@ -23,7 +24,7 @@ class SwaggerExtension implements AfterLastTestHook
         app(SwaggerService::class)->saveProductionData();
     }
 
-    protected function createApplication(): Application
+    protected function createApplication(): Container
     {
         $app = require __DIR__ . '/../../../../../../bootstrap/app.php';
 
