@@ -1,8 +1,9 @@
 {
-  "name": "ronasit/laravel-swagger",
+  "name": "imetal/laravel-swagger",
   "description": "Provided middleware for generating of swagger-documentation file by run testing of restful API.",
   "keywords": [
     "laravel",
+    "lumen",
     "swagger",
     "testing",
     "auto-documentation",
@@ -13,6 +14,10 @@
     {
       "name": "Ronas IT",
       "homepage": "https://github.com/RonasIT/laravel-swagger/graphs/contributors"
+    },
+    {
+      "name": "iMetal",
+      "homepage": "https://imetal.nl/"
     }
   ],
   "require": {
