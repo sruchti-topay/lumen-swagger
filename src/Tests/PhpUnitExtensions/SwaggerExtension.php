@@ -28,7 +28,7 @@ class SwaggerExtension implements AfterLastTestHook
     {
         $app = require __DIR__ . '/../../../../../../bootstrap/app.php';
 
-        $app->loadEnvironmentFrom('.env.testing');
+        // $app->loadEnvironmentFrom('.env.testing');
         $app->make(Kernel::class)->bootstrap();
 
         return $app;
