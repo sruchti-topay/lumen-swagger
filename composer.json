@@ -1,5 +1,5 @@
 {
-  "name": "imetal/laravel-swagger",
+  "name": "imetal/lumen-swagger",
   "description": "Provided middleware for generating of swagger-documentation file by run testing of restful API.",
   "keywords": [
     "laravel",
