@@ -24,18 +24,16 @@ class SwaggerService
 {
     use GetDependenciesTrait;
 
-    protected $driver;
+    protected SwaggerDriverInterface $driver;
 
-    protected $data;
-    protected $config;
-    protected $container;
-    private $uri;
-    private $method;
-    /**
-     * @var Request
-     */
-    private $request;
-    private $item;
+    protected array $data;
+    protected array $config;
+    protected Container $container;
+    private string $uri;
+    private string $method;
+    private Request $request;
+    /** @var array $item An pointer to the current item in the $data array */
+    private array $item;
     private string $security;
 
     protected $ruleToTypeMap = [
@@ -344,9 +342,9 @@ class SwaggerService
 
         $actionName = $this->getActionName($this->uri);
 
-        if (in_array($this->method, ['get', 'delete'])) {
-            $this->saveGetRequestParameters($rules, $attributes, $annotations);
-        } else {
+        $this->saveGetRequestParameters($rules, $attributes, $annotations);
+
+        if (!in_array($this->method, ['get', 'delete'])) {
             $this->savePostRequestParameters($actionName, $rules, $attributes, $annotations);
         }
     }
