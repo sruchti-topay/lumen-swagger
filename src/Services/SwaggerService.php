@@ -3,7 +3,9 @@
 namespace RonasIT\Support\AutoDoc\Services;
 
 use Illuminate\Container\Container;
+use Illuminate\Http\JsonResponse as LumenJsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as LumenResponse;
 use Illuminate\Http\Testing\File;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -78,7 +80,7 @@ class SwaggerService
         }
     }
 
-    protected function initConfig()
+    protected function initConfig() : void
     {
         $this->config = config('auto-doc');
 
@@ -87,23 +89,25 @@ class SwaggerService
         if (empty($version)) {
             throw new LegacyConfigException();
         }
-
+        /** @var array $packageConfigs Contains the array with the default settings */
         $packageConfigs = require __DIR__ . '/../../config/auto-doc.php';
 
-        $major = Str::before($version, '.');
-        $minor = Str::after($version, '.');
+        $major = (int)Str::before($version, '.');
+        $minor = (int)Str::after($version, '.');
 
-        $actualMajor = Str::before($packageConfigs['config_version'], '.');
-        $actualMinor = Str::after($packageConfigs['config_version'], '.');
+        $actualMajor = (int)Str::before($packageConfigs['config_version'], '.');
+        $actualMinor = (int)Str::after($packageConfigs['config_version'], '.');
 
         if ($actualMajor > $major || $actualMinor > $minor) {
             throw new LegacyConfigException();
         }
     }
 
-    protected function setDriver()
+    protected function setDriver() : void
     {
+        /** @var string $driver Driver name as key to lookup in drivers var */
         $driver = $this->config['driver'];
+        /** @var string $className String containing the classname to initiate */
         $className = Arr::get($this->config, "drivers.{$driver}.class");
 
         if (!class_exists($className)) {
@@ -152,14 +156,14 @@ class SwaggerService
         return $data;
     }
 
-    protected function getAppUrl()
+    protected function getAppUrl() : string|array
     {
         $url = config('app.url');
 
         return str_replace(['http://', 'https://', '/'], '', $url);
     }
 
-    protected function generateSecurityDefinition()
+    protected function generateSecurityDefinition() : string|array
     {
         if (empty($this->security)) {
             return '';
@@ -170,7 +174,7 @@ class SwaggerService
         ];
     }
 
-    protected function generateSecurityDefinitionObject($type): array
+    protected function generateSecurityDefinitionObject(string $type): array
     {
         switch ($type) {
             case 'jwt':
@@ -191,7 +195,7 @@ class SwaggerService
         }
     }
 
-    public function addData(Request $request, $response)
+    public function addData(Request $request, LumenResponse|LumenJsonResponse $response) : void
     {
         $this->request = $request;
 
@@ -203,7 +207,7 @@ class SwaggerService
         $this->driver->saveTmpData($this->data);
     }
 
-    protected function prepareItem()
+    protected function prepareItem() : void
     {
         $this->uri = "/{$this->getUri()}";
         $this->method = strtolower($this->request->getMethod());
@@ -222,7 +226,7 @@ class SwaggerService
         $this->item = &$this->data['paths'][$this->uri][$this->method]; // Pointer !!!!
     }
 
-    protected function getUri()
+    protected function getUri() : string|array|null
     {
         $uri = $this->request->getUri();
         $basePath = preg_replace("/^\//", '', $this->config['basePath']);
@@ -256,7 +260,7 @@ class SwaggerService
         return $result;
     }
 
-    protected function parseRequest()
+    protected function parseRequest() : void
     {
         $this->saveConsume();
         $this->saveTags();
@@ -278,7 +282,7 @@ class SwaggerService
         $this->saveOperationId();
     }
 
-    protected function parseResponse($response)
+    protected function parseResponse(LumenResponse|LumenJsonResponse $response) : void
     {
         $code = $response->getStatusCode();
 
@@ -313,7 +317,7 @@ class SwaggerService
         }
     }
 
-    protected function saveExample($code, $content, $produce)
+    protected function saveExample(string $code, mixed $content, string $produce) : void
     {
         $availableContentTypes = [
             'application',
@@ -328,7 +332,7 @@ class SwaggerService
         }
     }
 
-    protected function makeResponseExample($content, $mimeType): array
+    protected function makeResponseExample(mixed $content, string $mimeType): array
     {
         $responseExample = [];
 
@@ -343,7 +347,7 @@ class SwaggerService
         return $responseExample;
     }
 
-    protected function saveParameters($request, array $annotations)
+    protected function saveParameters(Request $request, array $annotations)
     {
         $formRequest = new $request;
         $formRequest->setUserResolver($this->request->getUserResolver());
@@ -534,7 +538,7 @@ class SwaggerService
         });
     }
 
-    public function saveConsume()
+    public function saveConsume() : void
     {
         if(!isset($this->item['requestBody'])) {
             $this->item['requestBody'] = [];
@@ -554,7 +558,7 @@ class SwaggerService
         }
     }
 
-    public function saveTags()
+    public function saveTags() : void
     {
         $tagIndex = 1;
 
@@ -629,7 +633,7 @@ class SwaggerService
         return !empty($header);
     }
 
-    protected function parseRequestName($request)
+    protected function parseRequestName(string $request) : string|array|null
     {
         $explodedRequest = explode('\\', $request);
         $requestName = array_pop($explodedRequest);
@@ -661,14 +665,14 @@ class SwaggerService
         return Arr::get($this->config, "defaults.code-descriptions.{$code}", $defaultDescription);
     }
 
-    protected function getActionName($uri): string
+    protected function getActionName(string $uri): string
     {
         $action = preg_replace('[\/]', '', $uri);
 
         return Str::camel($action);
     }
 
-    protected function saveTempData()
+    protected function saveTempData() : void
     {
         $exportFile = Arr::get($this->config, 'files.temporary');
         $data = json_encode($this->data);
@@ -676,12 +680,12 @@ class SwaggerService
         file_put_contents($exportFile, $data);
     }
 
-    public function saveProductionData()
+    public function saveProductionData() : void
     {
         $this->driver->saveData();
     }
 
-    public function getDocFileContent()
+    public function getDocFileContent() : array
     {
         $this->documentation = $this->driver->getDocumentation();
 
@@ -721,7 +725,7 @@ class SwaggerService
         return $this->documentation;
     }
 
-    protected function camelCaseToUnderScore($input): string
+    protected function camelCaseToUnderScore(string $input): string
     {
         preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $input, $matches);
         $ret = $matches[0];
@@ -743,7 +747,7 @@ class SwaggerService
         return $example;
     }
 
-    protected function replaceObjectValues($parameters): array
+    protected function replaceObjectValues(array $parameters): array
     {
         $classNamesValues = [
             File::class => '[uploaded_file]',
@@ -765,7 +769,7 @@ class SwaggerService
         return $returnParameters;
     }
 
-    protected function getClassAnnotations($class): array
+    protected function getClassAnnotations(string $class): array
     {
         $reflection = new ReflectionClass($class);
 
@@ -796,7 +800,7 @@ class SwaggerService
      * this issue: https://github.com/OAI/OpenAPI-Specification/issues/229
      * We hope swagger developers will resolve this problem in next release of Swagger OpenAPI
      * */
-    protected function replaceNullValues($parameters, $types, &$example)
+    protected function replaceNullValues(array $parameters, array $types, &$example)
     {
         foreach ($parameters as $parameter => $value) {
             if (is_null($value) && in_array($parameter, $types)) {
@@ -809,7 +813,7 @@ class SwaggerService
         }
     }
 
-    protected function getDefaultValueByType($type)
+    protected function getDefaultValueByType(string $type) : string|int|false
     {
         $values = [
             'object' => 'null',
@@ -825,9 +829,9 @@ class SwaggerService
 
     /**
      * @param $info
-     * @return mixed
+     * @return array
      */
-    protected function prepareInfo($info)
+    protected function prepareInfo(array $info) : array
     {
         if (empty($info)) {
             return $info;
