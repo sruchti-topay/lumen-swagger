@@ -1,12 +1,8 @@
-# Laravel Swagger plugin
+# Lumen Swagger plugin
 
 <p align="left">
-<a href="https://packagist.org/packages/ronasit/laravel-swagger"><img src="https://img.shields.io/packagist/dt/ronasit/laravel-swagger" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/ronasit/laravel-swagger"><img src="https://img.shields.io/packagist/v/ronasit/laravel-swagger" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/ronasit/laravel-swagger"><img src="https://img.shields.io/packagist/l/ronasit/laravel-swagger" alt="License"></a>
 </p>
-
-![img.png](assets/images/laravel-banner.png)
 
 ## Introduction
 
@@ -15,7 +11,7 @@ passing PHPUnit tests.
 
 ## Installation
 
-1. Install the package using the following command: `composer require ronasit/laravel-swagger`
+1. Install the package using the following command: `composer require imetal/lumen-swagger`
 
     > ***Note***
     > 
@@ -153,13 +149,13 @@ You can use the following annotations in your request classes to customize docum
 
 You can specify the way to collect documentation by creating your own custom driver.
 
-You can find example of drivers [here](https://github.com/RonasIT/laravel-swagger/tree/master/src/Drivers).
+You can find example of drivers [here](https://github.com/imetal-nl/lumen-swagger/tree/master/src/Drivers).
 
 ## Contributing
 
-Thank you for considering contributing to Laravel Swagger plugin! The contribution guide can be found in the [Contributing guide](CONTRIBUTING.md).
+Thank you for considering contributing to Lumen Swagger plugin! The contribution guide can be found in the [Contributing guide](CONTRIBUTING.md).
 
 ## License
 
-Laravel Swagger plugin is open-sourced software licensed under the [MIT license](LICENSE).
+Lumen Swagger plugin is open-sourced software licensed under the [MIT license](LICENSE).
  
