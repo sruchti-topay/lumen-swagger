@@ -201,7 +201,6 @@ class SwaggerService
         if (empty(Arr::get($this->data, "paths.{$this->uri}.{$this->method}"))) {
             $this->data['paths'][$this->uri][$this->method] = [
                 'tags' => [],
-                'produces' => [],
                 'parameters' => $this->getPathParams(),
                 'responses' => [],
                 'security' => [],
@@ -271,7 +270,15 @@ class SwaggerService
 
     protected function parseResponse($response)
     {
-        $produceList = $this->data['paths'][$this->uri][$this->method]['produces'];
+        $code = $response->getStatusCode();
+
+        if(!isset($this->item['responses'][$code])) {
+            $this->item['responses'][$code] = [];
+        }
+        if(!isset($this->item['responses'][$code]['content'])) {
+            $this->item['responses'][$code]['content'] = [];
+        }
+        $produceList = array_keys($this->data['paths'][$this->uri][$this->method]['responses'][$code]['content']);
 
         $produce = $response->headers->get('Content-type');
 
@@ -280,13 +287,12 @@ class SwaggerService
         }
 
         if (!in_array($produce, $produceList)) {
-            $this->item['produces'][] = $produce;
+            $this->item['responses'][$code]['content'][$produce] = [];
         }
 
         $responses = $this->item['responses'];
-        $code = $response->getStatusCode();
 
-        if (!in_array($code, $responses)) {
+        if (!isset($this->item['responses'][$code]['content'][$produce]['example'])) {
             $this->saveExample(
                 $response->getStatusCode(),
                 $response->getContent(),
@@ -305,9 +311,9 @@ class SwaggerService
         $explodedContentType = explode('/', $produce);
 
         if (in_array($explodedContentType[0], $availableContentTypes)) {
-            $this->item['responses'][$code] = $this->makeResponseExample($content, $produce, $description);
+            $this->item['responses'][$code]['content'][$produce] = $this->makeResponseExample($content, $produce, $description);
         } else {
-            $this->item['responses'][$code] = '*Unavailable for preview*';
+            $this->item['responses'][$code]['content'][$produce] = '*Unavailable for preview*';
         }
     }
 
@@ -316,11 +322,11 @@ class SwaggerService
         $responseExample = ['description' => $description];
 
         if ($mimeType === 'application/json') {
-            $responseExample['schema'] = ['example' => json_decode($content, true)];
+            $responseExample['example'] = json_decode($content, true);
         } elseif ($mimeType === 'application/pdf') {
-            $responseExample['schema'] = ['example' => base64_encode($content)];
+            $responseExample['example'] = base64_encode($content);
         } else {
-            $responseExample['examples']['example'] = $content;
+            $responseExample['example'] = $content;
         }
 
         return $responseExample;
