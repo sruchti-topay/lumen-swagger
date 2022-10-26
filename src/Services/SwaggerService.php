@@ -464,8 +464,8 @@ class SwaggerService
     {
         $requestParametersCount = count($this->request->all());
 
-        if (isset($this->data['definitions'][$actionName . 'Object']['properties'])) {
-            $objectParametersCount = count($this->data['definitions'][$actionName . 'Object']['properties']);
+        if (isset($this->data['components']['schemas'][$actionName . 'RequestObject']['properties'])) {
+            $objectParametersCount = count($this->data['components']['schemas'][$actionName . 'RequestObject']['properties']);
         } else {
             $objectParametersCount = 0;
         }
@@ -681,12 +681,12 @@ class SwaggerService
                     }
                 }
             }
+            
+            $componentsSchemas = array_keys($fileContent['components']['schemas']);
 
-            $definitions = array_keys($fileContent['definitions']);
-
-            foreach ($definitions as $definition) {
-                if (empty($this->documentation['definitions'][$definition])) {
-                    $this->documentation['definitions'][$definition] = $fileContent['definitions'][$definition];
+            foreach ($componentsSchemas as $componentsSchema) {
+                if (empty($this->documentation['components']['schemas'][$componentsSchema])) {
+                    $this->documentation['components']['schemas'][$componentsSchema] = $fileContent['components']['schemas'][$componentsSchema];
                 }
             }
         }
