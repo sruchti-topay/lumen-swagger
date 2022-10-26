@@ -273,7 +273,9 @@ class SwaggerService
         $code = $response->getStatusCode();
 
         if(!isset($this->item['responses'][$code])) {
-            $this->item['responses'][$code] = [];
+            $this->item['responses'][$code] = [
+                'description' => $this->getResponseDescription($code)
+            ];
         }
         if(!isset($this->item['responses'][$code]['content'])) {
             $this->item['responses'][$code]['content'] = [];
@@ -303,7 +305,6 @@ class SwaggerService
 
     protected function saveExample($code, $content, $produce)
     {
-        $description = $this->getResponseDescription($code);
         $availableContentTypes = [
             'application',
             'text'
@@ -311,15 +312,15 @@ class SwaggerService
         $explodedContentType = explode('/', $produce);
 
         if (in_array($explodedContentType[0], $availableContentTypes)) {
-            $this->item['responses'][$code]['content'][$produce] = $this->makeResponseExample($content, $produce, $description);
+            $this->item['responses'][$code]['content'][$produce] = $this->makeResponseExample($content, $produce);
         } else {
             $this->item['responses'][$code]['content'][$produce] = '*Unavailable for preview*';
         }
     }
 
-    protected function makeResponseExample($content, $mimeType, $description = ''): array
+    protected function makeResponseExample($content, $mimeType): array
     {
-        $responseExample = ['description' => $description];
+        $responseExample = [];
 
         if ($mimeType === 'application/json') {
             $responseExample['example'] = json_decode($content, true);
