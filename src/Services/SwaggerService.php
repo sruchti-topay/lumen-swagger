@@ -117,7 +117,8 @@ class SwaggerService
             'basePath' => $this->config['basePath'],
             'schemes' => $this->config['schemes'],
             'paths' => [],
-            'definitions' => $this->config['definitions']
+            'definitions' => $this->config['definitions'],
+            'servers' => Arr::get($this->config, 'servers')
         ];
 
         $info = $this->prepareInfo($this->config['info']);
