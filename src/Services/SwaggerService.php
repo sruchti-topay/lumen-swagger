@@ -26,7 +26,7 @@ class SwaggerService
 
     protected SwaggerDriverInterface $driver;
 
-    protected array $data;
+    protected array|null $data;
     protected array $config;
     protected Container $container;
     private string $uri;
