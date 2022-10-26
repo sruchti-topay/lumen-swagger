@@ -3,18 +3,18 @@
 namespace RonasIT\Support\AutoDoc\Services;
 
 use Illuminate\Container\Container;
+use Illuminate\Http\Request;
 use Illuminate\Http\Testing\File;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use ReflectionClass;
-use Illuminate\Http\Request;
+use RonasIT\Support\AutoDoc\Exceptions\InvalidDriverClassException;
 use RonasIT\Support\AutoDoc\Exceptions\LegacyConfigException;
+use RonasIT\Support\AutoDoc\Exceptions\SwaggerDriverClassNotFoundException;
 use RonasIT\Support\AutoDoc\Exceptions\WrongSecurityConfigException;
+use RonasIT\Support\AutoDoc\Interfaces\SwaggerDriverInterface;
 use RonasIT\Support\AutoDoc\Traits\GetDependenciesTrait;
 use Symfony\Component\HttpFoundation\Response;
-use RonasIT\Support\AutoDoc\Interfaces\SwaggerDriverInterface;
-use RonasIT\Support\AutoDoc\Exceptions\InvalidDriverClassException;
-use RonasIT\Support\AutoDoc\Exceptions\SwaggerDriverClassNotFoundException;
 
 /**
  * @property SwaggerDriverInterface $driver
@@ -55,7 +55,7 @@ class SwaggerService
 
         $this->setDriver();
 
-        if (config('app.env') == 'testing') {
+        // if (config('app.env') == 'testing') {
             $this->container = $container;
 
             $this->security = $this->config['security'];
@@ -67,7 +67,7 @@ class SwaggerService
 
                 $this->driver->saveTmpData($this->data);
             }
-        }
+        // }
     }
 
     protected function initConfig()
@@ -210,7 +210,7 @@ class SwaggerService
 
     protected function getUri()
     {
-        $uri = $this->request->route()->uri();
+        $uri = $this->request->getUri();
         $basePath = preg_replace("/^\//", '', $this->config['basePath']);
         $preparedUri = preg_replace("/^{$basePath}/", '', $uri);
 
@@ -474,7 +474,8 @@ class SwaggerService
 
     public function getConcreteRequest()
     {
-        $controller = $this->request->route()->getActionName();
+        /** @var string $controller */
+        $controller = $this->request->route()[1][0];
 
         if ($controller == 'Closure') {
             return null;
@@ -486,10 +487,11 @@ class SwaggerService
         $method = $explodedController[1];
 
         $instance = app($class);
+        /** @var array $route */
         $route = $this->request->route();
 
         $parameters = $this->resolveClassMethodDependencies(
-            $route->parametersWithoutNulls(), $instance, $method
+            \array_filter($route[2]), $instance, $method
         );
 
         return Arr::first($parameters, function ($key) {
