@@ -121,7 +121,9 @@ class SwaggerService
                 ]
             ],
             'tags' => [],
-            'externalDocs' => new stdClass()
+            'externalDocs' => [
+                'url' => ''
+            ]
         ];
 
         $info = $this->prepareInfo($this->config['info']);
@@ -523,6 +525,10 @@ class SwaggerService
 
         if (!empty($consume) && !in_array($consume, $consumeList)) {
             $this->item['requestBody']['content'][$consume] = [];
+        } else {
+            if(count($consumeList) < 1) {   // Nothing added yet
+                unset($this->item['requestBody']);
+            }
         }
     }
 
