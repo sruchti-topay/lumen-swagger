@@ -156,7 +156,7 @@ class SwaggerService
         return $data;
     }
 
-    protected function getAppUrl() : string|array
+    protected function getAppUrl() : string
     {
         $url = config('app.url');
 
@@ -347,7 +347,7 @@ class SwaggerService
         return $responseExample;
     }
 
-    protected function saveParameters(Request $request, array $annotations)
+    protected function saveParameters($request, array $annotations)
     {
         $formRequest = new $request;
         $formRequest->setUserResolver($this->request->getUserResolver());
@@ -569,7 +569,7 @@ class SwaggerService
         $this->item['tags'] = [$tag];
     }
 
-    public function saveDescription($request, array $annotations)
+    public function saveDescription($request, array $annotations) : void
     {
         $this->item['summary'] = $this->getSummary($request, $annotations);
 
@@ -580,7 +580,7 @@ class SwaggerService
         }
     }
 
-    public function saveOperationId() {
+    public function saveOperationId() : void {
         $this->item['operationId'] = ucfirst($this->method);
         foreach($this->item['tags'] as $sTag) {
             $this->item['operationId'].=ucfirst($sTag);
@@ -590,14 +590,14 @@ class SwaggerService
         }
     }
 
-    protected function saveSecurity()
+    protected function saveSecurity() : void
     {
         if ($this->requestSupportAuth()) {
             $this->addSecurityToOperation();
         }
     }
 
-    protected function addSecurityToOperation()
+    protected function addSecurityToOperation() : void
     {
         $security = &$this->data['paths'][$this->uri][$this->method]['security'];
 
