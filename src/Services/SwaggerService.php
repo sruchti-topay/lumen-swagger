@@ -201,7 +201,6 @@ class SwaggerService
         if (empty(Arr::get($this->data, "paths.{$this->uri}.{$this->method}"))) {
             $this->data['paths'][$this->uri][$this->method] = [
                 'tags' => [],
-                'consumes' => [],
                 'produces' => [],
                 'parameters' => $this->getPathParams(),
                 'responses' => [],
@@ -211,7 +210,7 @@ class SwaggerService
             ];
         }
 
-        $this->item = &$this->data['paths'][$this->uri][$this->method];
+        $this->item = &$this->data['paths'][$this->uri][$this->method]; // Pointer !!!!
     }
 
     protected function getUri()
@@ -379,22 +378,20 @@ class SwaggerService
     {
         if ($this->requestHasMoreProperties($actionName)) {
             if ($this->requestHasBody()) {
-                $this->item['parameters'][] = [
-                    'in' => 'body',
-                    'name' => 'body',
-                    'description' => '',
-                    'required' => true,
+                $this->item['requestBody']['required'] = true;
+                $this->item['requestBody']['description'] = '';
+                $this->item['requestBody']['content'][array_key_first($this->item['requestBody']['content'])] = [
                     'schema' => [
-                        "\$ref" => "#/definitions/{$actionName}Object"
+                        "\$ref" => "#/components/schemas/{$actionName}RequestObject"
                     ]
                 ];
             }
 
-            $this->saveDefinitions($actionName, $rules, $attributes, $annotations);
+            $this->saveComponentSchemaRequestObject($actionName, $rules, $attributes, $annotations);
         }
     }
 
-    protected function saveDefinitions($objectName, $rules, $attributes, array $annotations)
+    protected function saveComponentSchemaRequestObject($objectName, $rules, $attributes, array $annotations)
     {
         $data = [
             'type' => 'object',
@@ -419,7 +416,7 @@ class SwaggerService
         }
 
         $data['example'] = $this->generateExample($data['properties']);
-        $this->data['definitions'][$objectName . 'Object'] = $data;
+        $this->data['components']['schemas'][$objectName . 'RequestObject'] = $data;
     }
 
     protected function getParameterType(array $validation): string
@@ -509,11 +506,17 @@ class SwaggerService
 
     public function saveConsume()
     {
-        $consumeList = $this->data['paths'][$this->uri][$this->method]['consumes'];
+        if(!isset($this->item['requestBody'])) {
+            $this->item['requestBody'] = [];
+        }
+        if(!isset($this->item['requestBody']['content'])) {
+            $this->item['requestBody']['content'] = [];
+        }
+        $consumeList = array_keys($this->data['paths'][$this->uri][$this->method]['requestBody']['content']);
         $consume = $this->request->header('Content-Type');
 
         if (!empty($consume) && !in_array($consume, $consumeList)) {
-            $this->item['consumes'][] = $consume;
+            $this->item['requestBody']['content'][$consume] = [];
         }
     }
 
