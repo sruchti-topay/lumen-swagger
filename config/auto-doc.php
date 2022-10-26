@@ -36,7 +36,9 @@ return [
         'title' => 'Name of Your Application',
         'termsOfService' => '',
         'contact' => [
-            'email' => 'your@email.com'
+            'email' => 'your@email.com',
+            'name' => 'your name',
+            'url' => 'your url'
         ],
         'license' => [
             'name' => '',
