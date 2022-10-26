@@ -4,6 +4,7 @@ namespace RonasIT\Support\AutoDoc\Traits;
 
 use Illuminate\Container\Container;
 use Illuminate\Support\Arr;
+use ReflectionClass;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
