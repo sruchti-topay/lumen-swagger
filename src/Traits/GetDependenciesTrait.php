@@ -2,12 +2,12 @@
 
 namespace RonasIT\Support\AutoDoc\Traits;
 
-use ReflectionMethod;
-use ReflectionFunction;
-use ReflectionParameter;
-use Illuminate\Support\Arr;
-use ReflectionFunctionAbstract;
 use Illuminate\Container\Container;
+use Illuminate\Support\Arr;
+use ReflectionFunction;
+use ReflectionFunctionAbstract;
+use ReflectionMethod;
+use ReflectionParameter;
 
 trait GetDependenciesTrait
 {
@@ -31,7 +31,9 @@ trait GetDependenciesTrait
 
     protected function transformDependency(ReflectionParameter $parameter)
     {
-        $class = $parameter->getClass();
+        $class = ($parameter->getType() && !$parameter->getType()->isBuiltin())
+                    ? new ReflectionClass($parameter->getType()->getName())
+                    : null;
 
         if (empty($class)) {
             return null;
