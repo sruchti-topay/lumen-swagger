@@ -112,7 +112,7 @@ class SwaggerService
     protected function generateEmptyData(): array
     {
         $data = [
-            'swagger' => Arr::get($this->config, 'swagger.version'),
+            'openapi' => Arr::get($this->config, 'swagger.version'),
             'host' => $this->getAppUrl(),
             'basePath' => $this->config['basePath'],
             'schemes' => $this->config['schemes'],
