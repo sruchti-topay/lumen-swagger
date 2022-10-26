@@ -475,7 +475,7 @@ class SwaggerService
     public function getConcreteRequest()
     {
         /** @var string $controller */
-        $controller = $this->request->route()[1][0];
+        $controller = $this->request->route()[1]['uses'];
 
         if ($controller == 'Closure') {
             return null;
