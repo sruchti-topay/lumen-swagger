@@ -45,6 +45,15 @@ class SwaggerService
         'numeric' => 'double',
         'string' => 'string'
     ];
+    
+    protected $typeConversionTable = [
+        'array' => 'array',
+        'boolean' => 'boolean',
+        'double' => 'number',
+        'integer' => 'integer',
+        'string' => 'string',
+		'NULL' => 'string'
+    ];
 
     protected $documentation;
 
@@ -423,9 +432,22 @@ class SwaggerService
             $this->saveParameterDescription($data, $parameter, $rulesArray, $attributes, $annotations);
         }
 
+        $data['properties'] = $this->getRequestParameters($this->request->all());
+
         $data['example'] = $this->generateExample($data['properties']);
         $this->data['components']['schemas'][$objectName . 'RequestObject'] = $data;
     }
+
+    protected function getRequestParameters(array $parameters, array $properties = []) {
+		foreach($parameters as $key => $value) {
+			$properties[$key] = [
+				'type' => $this->typeConversionTable[gettype($value)],
+				'example' => $value ?? 'null',
+				'nullable' => is_null($value) ? true : false
+			];
+		}
+		return $properties;
+	}
 
     protected function getParameterType(array $validation): string
     {
