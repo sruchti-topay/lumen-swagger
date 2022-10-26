@@ -206,7 +206,8 @@ class SwaggerService
                 'parameters' => $this->getPathParams(),
                 'responses' => [],
                 'security' => [],
-                'description' => ''
+                'description' => '',
+                'operationId' => ''
             ];
         }
 
@@ -265,6 +266,8 @@ class SwaggerService
 
         $this->saveParameters($concreteRequest, $annotations);
         $this->saveDescription($concreteRequest, $annotations);
+
+        $this->saveOperationId();
     }
 
     protected function parseResponse($response)
@@ -533,6 +536,16 @@ class SwaggerService
 
         if (!empty($description)) {
             $this->item['description'] = $description;
+        }
+    }
+
+    public function saveOperationId() {
+        $this->item['operationId'] = ucfirst($this->method);
+        foreach($this->item['tags'] as $sTag) {
+            $this->item['operationId'].=ucfirst($sTag);
+        }
+        foreach($this->item['parameters'] as $aParam) {
+            $this->item['operationId'].=ucfirst($aParam['name']);
         }
     }
 
