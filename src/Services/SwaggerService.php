@@ -35,7 +35,7 @@ class SwaggerService
      */
     private $request;
     private $item;
-    private $security;
+    private string $security;
 
     protected $ruleToTypeMap = [
         'array' => 'object',
@@ -113,12 +113,14 @@ class SwaggerService
     {
         $data = [
             'openapi' => Arr::get($this->config, 'swagger.version'),
-            'host' => $this->getAppUrl(),
-            'basePath' => $this->config['basePath'],
-            'schemes' => $this->config['schemes'],
             'paths' => [],
-            'definitions' => $this->config['definitions'],
             'servers' => Arr::get($this->config, 'servers'),
+            'components' => [
+                'schemas' => [],
+                'securitySchemes' => [
+
+                ]
+            ],
             'tags' => [],
             'externalDocs' => []
         ];
@@ -132,7 +134,7 @@ class SwaggerService
         $securityDefinitions = $this->generateSecurityDefinition();
 
         if (!empty($securityDefinitions)) {
-            $data['securityDefinitions'] = $securityDefinitions;
+            $data['components']['securitySchemes'] = $securityDefinitions;
         }
 
         $data['info']['description'] = view($data['info']['description'])->render();
@@ -164,7 +166,7 @@ class SwaggerService
             case 'jwt':
                 return [
                     'type' => 'apiKey',
-                    'name' => 'authorization',
+                    'name' => 'Authorization',
                     'in' => 'header'
                 ];
 
