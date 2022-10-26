@@ -2,10 +2,10 @@
 
 namespace RonasIT\Support\AutoDoc\Drivers;
 
-use stdClass;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use RonasIT\Support\AutoDoc\Interfaces\SwaggerDriverInterface;
 use RonasIT\Support\AutoDoc\Exceptions\MissedProductionFilePathException;
+use RonasIT\Support\AutoDoc\Interfaces\SwaggerDriverInterface;
+use stdClass;
 
 class LocalDriver implements SwaggerDriverInterface
 {
@@ -34,7 +34,7 @@ class LocalDriver implements SwaggerDriverInterface
 
     public function saveData()
     {
-        $content = json_encode(self::$data);
+        $content = json_encode(self::$data, \JSON_PRETTY_PRINT);
 
         file_put_contents($this->prodFilePath, $content);
 
