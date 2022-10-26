@@ -118,7 +118,9 @@ class SwaggerService
             'schemes' => $this->config['schemes'],
             'paths' => [],
             'definitions' => $this->config['definitions'],
-            'servers' => Arr::get($this->config, 'servers')
+            'servers' => Arr::get($this->config, 'servers'),
+            'tags' => [],
+            'externalDocs' => []
         ];
 
         $info = $this->prepareInfo($this->config['info']);
