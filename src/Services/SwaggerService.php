@@ -55,7 +55,7 @@ class SwaggerService
 
         $this->setDriver();
 
-        // if (config('app.env') == 'testing') {
+        if (env('AUTODOC_ENABLE', false)) {
             $this->container = $container;
 
             $this->security = $this->config['security'];
@@ -67,7 +67,7 @@ class SwaggerService
 
                 $this->driver->saveTmpData($this->data);
             }
-        // }
+        }
     }
 
     protected function initConfig()

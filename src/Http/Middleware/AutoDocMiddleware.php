@@ -16,8 +16,7 @@ class AutoDocMiddleware
     {
         $response = $next($request);
 
-        // (config('app.env') == 'testing') &&
-        if ( !self::$skipped && !empty($request->route())) {
+        if (env('AUTODOC_ENABLE', false) && !self::$skipped && !empty($request->route())) {
             app(SwaggerService::class)->addData($request, $response);
         }
 
