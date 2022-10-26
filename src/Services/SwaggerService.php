@@ -14,6 +14,7 @@ use RonasIT\Support\AutoDoc\Exceptions\SwaggerDriverClassNotFoundException;
 use RonasIT\Support\AutoDoc\Exceptions\WrongSecurityConfigException;
 use RonasIT\Support\AutoDoc\Interfaces\SwaggerDriverInterface;
 use RonasIT\Support\AutoDoc\Traits\GetDependenciesTrait;
+use stdClass;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -122,7 +123,7 @@ class SwaggerService
                 ]
             ],
             'tags' => [],
-            'externalDocs' => []
+            'externalDocs' => new stdClass()
         ];
 
         $info = $this->prepareInfo($this->config['info']);
@@ -323,11 +324,11 @@ class SwaggerService
         $responseExample = [];
 
         if ($mimeType === 'application/json') {
-            $responseExample['example'] = json_decode($content, true);
+            $responseExample['example'] = ['value' => json_decode($content, true)];
         } elseif ($mimeType === 'application/pdf') {
-            $responseExample['example'] = base64_encode($content);
+            $responseExample['example'] = ['value' => base64_encode($content)];
         } else {
-            $responseExample['example'] = $content;
+            $responseExample['example'] = ['value' => $content];
         }
 
         return $responseExample;
@@ -402,7 +403,7 @@ class SwaggerService
     {
         $data = [
             'type' => 'object',
-            'properties' => []
+            'properties' => new stdClass()
         ];
 
         foreach ($rules as $parameter => $rule) {
