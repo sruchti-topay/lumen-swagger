@@ -416,7 +416,7 @@ class SwaggerService
     {
         $data = [
             'type' => 'object',
-            'properties' => new stdClass()
+            'properties' => [],
         ];
 
         foreach ($rules as $parameter => $rule) {
