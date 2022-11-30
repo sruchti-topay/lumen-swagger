@@ -47,7 +47,7 @@ class SwaggerService
         'numeric' => 'double',
         'string' => 'string'
     ];
-    
+
     protected $typeConversionTable = [
         'array' => 'array',
         'boolean' => 'boolean',
@@ -56,6 +56,17 @@ class SwaggerService
         'string' => 'string',
 		'NULL' => 'string'
     ];
+
+	protected $defaultHeaders = [
+		'host',
+		'user-agent',
+		'accept',
+		'accept-language',
+		'accept-charset',
+		'authorization',
+		'content-type',
+		'content-length'
+	];
 
     protected $documentation;
 
@@ -352,15 +363,17 @@ class SwaggerService
         $formRequest = new $request;
         $formRequest->setUserResolver($this->request->getUserResolver());
         $formRequest->setRouteResolver($this->request->getRouteResolver());
-        $rules = method_exists($formRequest, 'rules') ? $formRequest->rules() : [];
+		$bodyRules = method_exists($formRequest, 'bodyRules') ? $formRequest->bodyRules() : [];
+		$queryRules = method_exists($formRequest, 'queryRules') ? $formRequest->queryRules() : [];
         $attributes = method_exists($formRequest, 'attributes') ? $formRequest->attributes() : [];
 
         $actionName = $this->getActionName($this->uri);
 
-        $this->saveGetRequestParameters($rules, $attributes, $annotations);
+        $this->saveGetRequestParameters($queryRules, $attributes, $annotations);
+		$this->saveHeaderParameters();
 
         if (!in_array($this->method, ['get', 'delete'])) {
-            $this->savePostRequestParameters($actionName, $rules, $attributes, $annotations);
+            $this->savePostRequestParameters($actionName, $bodyRules, $attributes, $annotations);
         }
     }
 
@@ -394,6 +407,21 @@ class SwaggerService
             }
         }
     }
+
+	protected function saveHeaderParameters() {
+		$aDifferences = array_diff(array_keys($this->request->header()), $this->defaultHeaders);
+		foreach ($aDifferences as $sDiff) {
+			$this->item['parameters'][] = [
+				'name' => $sDiff,
+				'in' => 'header',
+				'required' => true,
+				'example' => $this->request->header($sDiff),
+				'schema' => [
+					'type' => 'string'
+				]
+			];
+		}
+	}
 
     protected function savePostRequestParameters($actionName, $rules, array $attributes, array $annotations)
     {
@@ -712,7 +740,7 @@ class SwaggerService
                     }
                 }
             }
-            
+
             $componentsSchemas = array_keys($fileContent['components']['schemas']);
 
             foreach ($componentsSchemas as $componentsSchema) {
