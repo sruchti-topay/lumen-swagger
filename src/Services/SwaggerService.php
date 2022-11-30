@@ -410,16 +410,22 @@ class SwaggerService
 
 	protected function saveHeaderParameters() {
 		$aDifferences = array_diff(array_keys($this->request->header()), $this->defaultHeaders);
+
 		foreach ($aDifferences as $sDiff) {
-			$this->item['parameters'][] = [
-				'name' => $sDiff,
-				'in' => 'header',
-				'required' => true,
-				'example' => $this->request->header($sDiff),
-				'schema' => [
-					'type' => 'string'
-				]
-			];
+            $existedParameter = Arr::first($this->item['parameters'], function ($existedParameter) use ($sDiff) {
+                return $existedParameter['name'] == $sDiff;
+            });
+            if (empty($existedParameter)) {
+                $this->item['parameters'][] = [
+                    'name' => $sDiff,
+                    'in' => 'header',
+                    'required' => true,
+                    'example' => $this->request->header($sDiff),
+                    'schema' => [
+                        'type' => 'string'
+                    ]
+                ];
+            }
 		}
 	}
 
