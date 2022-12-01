@@ -404,6 +404,9 @@ class SwaggerService
                 if (in_array('required', $validation)) {
                     $parameterDefinition['required'] = true;
                 }
+				if (in_array('present', $validation)) {
+                    $parameterDefinition['required'] = true;
+                }
 				foreach ($validation as $case) {
 					if (str_starts_with($case, 'in:')) {
 						$parameterDefinition['schema']['enum'] = explode(',', substr($case, 3));
