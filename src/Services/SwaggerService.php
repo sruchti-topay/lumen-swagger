@@ -242,6 +242,7 @@ class SwaggerService
         $uri = $this->request->getUri();
         $basePath = preg_replace("/^\//", '', $this->config['basePath']);
         $preparedUri = preg_replace("/^{$basePath}/", '', $uri);
+		$preparedUri = explode('?', $preparedUri)[0];
 
         return preg_replace("/^\//", '', $preparedUri);
     }
