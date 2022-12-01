@@ -397,11 +397,18 @@ class SwaggerService
                     'in' => 'query',
                     'name' => $parameter,
                     'description' => $description,
-                    'type' => $this->getParameterType($validation)
+					'schema' => [
+						'type' => $this->getParameterType($validation),
+					]
                 ];
                 if (in_array('required', $validation)) {
                     $parameterDefinition['required'] = true;
                 }
+				foreach ($validation as $case) {
+					if (str_starts_with($case, 'in:')) {
+						$parameterDefinition['schema']['enum'] = explode(',', substr($case, 3));
+					}
+				}
 
                 $this->item['parameters'][] = $parameterDefinition;
             }
