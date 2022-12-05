@@ -54,7 +54,8 @@ class SwaggerService
         'double' => 'number',
         'integer' => 'integer',
         'string' => 'string',
-		'NULL' => 'string'
+		'NULL' => 'string',
+		'object' => 'object'
     ];
 
 	protected $defaultHeaders = [
