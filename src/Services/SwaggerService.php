@@ -476,6 +476,12 @@ class SwaggerService
                 $data['required'][] = $parameter;
             }
 
+            foreach ($rulesArray as $key => $rule) {
+				if (is_object($rule)) {
+					unset($rulesArray[$key]);
+				}
+			}
+
             $rulesArray = array_flip(array_diff_key(array_flip($rulesArray), $uselessRules));
 
             $this->saveParameterDescription($data, $parameter, $rulesArray, $attributes, $annotations);
