@@ -334,7 +334,8 @@ class SwaggerService
     {
         $availableContentTypes = [
             'application',
-            'text'
+            'text',
+			'image'
         ];
         $explodedContentType = explode('/', $produce);
 
@@ -353,7 +354,9 @@ class SwaggerService
             $responseExample['example'] = ['value' => json_decode($content, true)];
         } elseif ($mimeType === 'application/pdf') {
             $responseExample['example'] = ['value' => base64_encode($content)];
-        } else {
+        } elseif (str_contains($mimeType, 'image')) {
+            $responseExample['example'] = ['value' => base64_encode($content)];
+        }else {
             $responseExample['example'] = ['value' => $content];
         }
 
