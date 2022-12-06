@@ -479,7 +479,11 @@ class SwaggerService
 
             foreach ($rulesArray as $key => $rule) {
 				if (is_object($rule)) {
-					unset($rulesArray[$key]);
+                    if(method_exists($rule, 'toSwagger')) {
+                        $rulesArray[$key] = $rule->toSwagger();
+                    } else {
+                        unset($rulesArray[$key]);
+                    }
 				}
 			}
 
