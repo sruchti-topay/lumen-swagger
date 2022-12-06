@@ -606,7 +606,7 @@ class SwaggerService
         $consume = $this->request->header('Content-Type');
 
         if (!empty($consume) && !in_array($consume, $consumeList)) {
-            $this->item['requestBody']['content'][$consume] = [];
+            $this->item['requestBody']['content'][$consume] = new stdClass;
         } else {
             if(count($consumeList) < 1) {   // Nothing added yet
                 unset($this->item['requestBody']);
