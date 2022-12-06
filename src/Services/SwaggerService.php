@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse as LumenJsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as LumenResponse;
 use Illuminate\Http\Testing\File;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use ReflectionClass;
@@ -817,9 +818,12 @@ class SwaggerService
 
         foreach ($parameters as $parameter => $value) {
             if (is_object($value)) {
-                $class = get_class($value);
-
-                $value = Arr::get($classNamesValues, $class, $class);
+				if ($value instanceof UploadedFile) {
+					$value = ['value' => $value->path()];
+				} else {
+					$class = get_class($value);
+					$value = Arr::get($classNamesValues, $class, $class);
+				}
             }
 
             Arr::set($returnParameters, $parameter, $value);
