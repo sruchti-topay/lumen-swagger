@@ -640,7 +640,7 @@ class SwaggerService
     }
 
     public function saveOperationId() : void {
-        $this->item['operationId'] = ucfirst($this->method);
+        $this->item['operationId'] = ucfirst($this->method).$this->uri;
         foreach($this->item['tags'] as $sTag) {
             $this->item['operationId'].=ucfirst($sTag);
         }
