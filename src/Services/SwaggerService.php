@@ -876,7 +876,11 @@ class SwaggerService
             if (is_null($value) && in_array($parameter, $types)) {
                 $example[$parameter] = $this->getDefaultValueByType($types[$parameter]['type']);
             } elseif (is_array($value)) {
-                $this->replaceNullValues($value, $types, $example[$parameter]);
+				if (empty($value)) {
+					$example[$parameter] = $value;
+				} else {
+					$this->replaceNullValues($value, $types, $example[$parameter]);
+				}
             } else {
                 $example[$parameter] = $value;
             }
