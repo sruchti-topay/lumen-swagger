@@ -489,6 +489,11 @@ class SwaggerService
                         unset($rulesArray[$key]);
                     }
 				}
+                $aDimensions = explode('.', $rule);
+                // Unset multi dimensional rules for now
+                if(count($aDimensions) > 1) {
+                    unset($rulesArray[$key]);
+                }
 			}
 
             $rulesArray = array_flip(array_diff_key(array_flip($rulesArray), $uselessRules));
