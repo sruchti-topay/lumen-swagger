@@ -470,10 +470,6 @@ class SwaggerService
         ];
 
         foreach ($rules as $parameter => $rule) {
-            // Ignore multi dimensional rules for now
-            if(stripos($rule, '.*') !== FALSE) {
-                continue;
-            }
             $rulesArray = (is_array($rule)) ? $rule : explode('|', $rule);
             $parameterType = $this->getParameterType($rulesArray);
             $this->saveParameterType($data, $parameter, $parameterType);
