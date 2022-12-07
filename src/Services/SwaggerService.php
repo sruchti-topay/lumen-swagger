@@ -504,8 +504,12 @@ class SwaggerService
 
     protected function getRequestParameters(array $parameters, array $properties = []) {
 		foreach($parameters as $key => $value) {
+			$sType = $this->typeConversionTable[gettype($value)];
+			if($sType === 'array' && !array_is_list($value)) {
+				$sType = 'object';
+			}
 			$properties[$key] = [
-				'type' => $this->typeConversionTable[gettype($value)],
+				'type' => $sType,
 				'example' => $value ?? 'null',
 				'nullable' => is_null($value) ? true : false
 			];
@@ -516,8 +520,6 @@ class SwaggerService
     protected function getParameterType(array $validation): string
     {
         $validationRules = $this->ruleToTypeMap;
-        $validationRules['email'] = 'string';
-
         $parameterType = 'string';
 
         foreach ($validation as $item) {
