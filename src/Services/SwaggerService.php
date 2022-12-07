@@ -470,6 +470,10 @@ class SwaggerService
         ];
 
         foreach ($rules as $parameter => $rule) {
+            // Ignore multi dimensional rules for now
+            if(stripos($rule, '.*') !== FALSE) {
+                continue;
+            }
             $rulesArray = (is_array($rule)) ? $rule : explode('|', $rule);
             $parameterType = $this->getParameterType($rulesArray);
             $this->saveParameterType($data, $parameter, $parameterType);
@@ -489,11 +493,6 @@ class SwaggerService
                         unset($rulesArray[$key]);
                     }
 				}
-                $aDimensions = explode('.', $rule);
-                // Unset multi dimensional rules for now
-                if(count($aDimensions) > 1) {
-                    unset($rulesArray[$key]);
-                }
 			}
 
             $rulesArray = array_flip(array_diff_key(array_flip($rulesArray), $uselessRules));
