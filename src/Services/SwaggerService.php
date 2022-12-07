@@ -501,7 +501,7 @@ class SwaggerService
         $data['example'] = $this->generateExample($data['properties']);
         $this->data['components']['schemas'][$objectName . 'RequestObject'] = $data;
     }
-
+    // Dit moet nog wel aangepast worden, dat het daadwerkelijk overneemt van het Request Object
     protected function getRequestParameters(array $parameters, array $properties = []) {
 		foreach($parameters as $key => $value) {
 			$sType = $this->typeConversionTable[gettype($value)];
@@ -511,7 +511,7 @@ class SwaggerService
 			$properties[$key] = [
 				'type' => $sType,
 				'example' => $value ?? 'null',
-				'nullable' => is_null($value) ? true : false
+				'nullable' => is_null($value) ? true : false  
 			];
 		}
 		return $properties;
