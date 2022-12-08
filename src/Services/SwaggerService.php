@@ -383,7 +383,7 @@ class SwaggerService
         }
     }
 
-    protected function saveGetRequestParameters($rules, array $attributes, array $annotations)
+    protected function saveGetRequestParameters(array $rules, array $attributes, array $annotations)
     {
         foreach ($rules as $parameter => $rule) {
             $validation = explode('|', $rule);
@@ -424,7 +424,7 @@ class SwaggerService
         }
     }
 
-	protected function saveHeaderParameters() {
+	protected function saveHeaderParameters() : void {
 		$aDifferences = array_diff(array_keys($this->request->header()), $this->defaultHeaders);
 
 		foreach ($aDifferences as $sDiff) {
@@ -445,7 +445,7 @@ class SwaggerService
 		}
 	}
 
-    protected function savePostRequestParameters($actionName, $rules, array $attributes, array $annotations)
+    protected function savePostRequestParameters(string $actionName, iterable $rules, array $attributes, array $annotations)
     {
         if ($this->requestHasMoreProperties($actionName)) {
             if ($this->requestHasBody()) {
@@ -462,7 +462,7 @@ class SwaggerService
         }
     }
 
-    protected function saveComponentSchemaRequestObject($objectName, $rules, $attributes, array $annotations)
+    protected function saveComponentSchemaRequestObject(string $objectName, iterable $rules, array $attributes, array $annotations)
     {
         $data = [
             'type' => 'object',
@@ -470,6 +470,9 @@ class SwaggerService
         ];
 
         foreach ($rules as $parameter => $rule) {
+            if(!is_string($parameter)) {
+                throw new \Exception('Only string parameters allowed! '.print_r($parameter, true));
+            }
             // Ignore multi dimensional rules for now
             if(stripos($parameter, '.*') !== FALSE) {
                 continue;
