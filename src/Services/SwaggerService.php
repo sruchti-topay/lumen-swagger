@@ -366,12 +366,12 @@ class SwaggerService
 
     protected function saveParameters($request, array $annotations)
     {
-        $formRequest = new $request;
-        $formRequest->setUserResolver($this->request->getUserResolver());
-        $formRequest->setRouteResolver($this->request->getRouteResolver());
-		$bodyRules = method_exists($formRequest, 'bodyRules') ? $formRequest->bodyRules() : [];
-		$queryRules = method_exists($formRequest, 'queryRules') ? $formRequest->queryRules() : [];
-        $attributes = method_exists($formRequest, 'attributes') ? $formRequest->attributes() : [];
+        // $formRequest = new $request;
+        // $formRequest->setUserResolver($this->request->getUserResolver());
+        // $formRequest->setRouteResolver($this->request->getRouteResolver());
+		$bodyRules = method_exists($request, 'bodyRules') ? $request->bodyRules() : [];
+		$queryRules = method_exists($request, 'queryRules') ? $request->queryRules() : [];
+        $attributes = method_exists($request, 'attributes') ? $request->attributes() : [];
 
         $actionName = $this->getActionName($this->uri);
 
