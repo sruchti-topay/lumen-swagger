@@ -290,7 +290,7 @@ class SwaggerService
 
         $annotations = $this->getClassAnnotations($concreteRequest);
 
-        $this->saveParameters($concreteRequest, $annotations);
+        $this->saveParameters($this->request, $annotations);
         $this->saveDescription($concreteRequest, $annotations);
 
         $this->saveOperationId();
