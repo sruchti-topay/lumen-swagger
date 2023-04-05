@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\AutoDoc\Services;
 
+use finfo;
 use Illuminate\Container\Container;
 use Illuminate\Http\JsonResponse as LumenJsonResponse;
 use Illuminate\Http\Request;
@@ -336,7 +337,8 @@ class SwaggerService
         $availableContentTypes = [
             'application',
             'text',
-			'image'
+			'image',
+			'multipart'
         ];
         $explodedContentType = explode('/', $produce);
 
@@ -347,6 +349,18 @@ class SwaggerService
         }
     }
 
+	// https://stackoverflow.com/a/9826656
+	protected function get_string_between($string, $start, $end)
+	{
+		$string = ' ' . $string;
+		$ini = strpos($string, $start);
+		if ($ini == 0)
+			return '';
+		$ini += strlen($start);
+		$len = strpos($string, $end, $ini) - $ini;
+		return substr($string, $ini, $len);
+	}
+
     protected function makeResponseExample(mixed $content, string $mimeType): array
     {
         $responseExample = [];
@@ -355,12 +369,33 @@ class SwaggerService
             $responseExample['example'] = ['value' => json_decode($content, true)];
         } elseif ($mimeType === 'application/pdf') {
             $responseExample['example'] = ['value' => base64_encode($content)];
+		} elseif (str_contains($mimeType, 'multipart/form-data')) {
+			$responseExample['schema'] = [
+				'type' => 'string',
+			];
+			$body = $this->get_string_between($content, "\r\n\r\n", "\r\n");
+			$responseExample['example'] = str_replace($body, base64_encode($body), $content);
         } elseif (str_contains($mimeType, 'image')) {
-            $responseExample['example'] = ['value' => base64_encode($content)];
-        }else {
+            // $responseExample['example'] = ['value' => base64_encode($content)];
+            // $responseExample['schema'] = [
+            //     'type' => "object",
+            //     'properties' => [
+            //         'eerste' => [
+            //             'type' => 'string',
+            //             'format' => 'binary',
+            //             'description' => 'Raw Binary'
+            //         ]
+            //     ]
+            // ];
+            // $responseExample['encoding'] = [
+            //     'eerste' => [
+            //         'contentType' => $mimeType
+            //     ]
+            // ];
+			$responseExample['example'] = ['value' => base64_encode($content)];
+        } else {
             $responseExample['example'] = ['value' => $content];
         }
-
         return $responseExample;
     }
 
