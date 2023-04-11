@@ -740,6 +740,7 @@ class SwaggerService
     protected function requestSupportAuth(): bool
     {
         switch ($this->security) {
+            case 'bearer':
             case 'jwt' :
                 $header = $this->request->header('authorization');
                 break;
