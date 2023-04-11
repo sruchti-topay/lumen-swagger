@@ -787,6 +787,8 @@ class SwaggerService
     {
         $action = preg_replace('[\/]', '', $uri);
 
+        $action = str_replace(['{', '}'], '-', $action);
+
         return Str::camel($action);
     }
 
