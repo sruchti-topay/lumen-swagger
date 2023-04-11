@@ -368,7 +368,11 @@ class SwaggerService
         if ($mimeType === 'application/json') {
             $responseExample['example'] = json_decode($content, true);
         } elseif ($mimeType === 'application/pdf') {
-            $responseExample['example'] = base64_encode($content);
+            $responseExample['schema'] = [
+				'type' => 'string',
+                'format' => 'binary'
+			];
+            $responseExample['example'] = bin2hex($content);
 		} elseif (str_contains($mimeType, 'multipart/form-data')) {
 			$responseExample['schema'] = [
 				'type' => 'string',
