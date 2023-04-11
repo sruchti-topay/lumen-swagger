@@ -18,6 +18,7 @@ use RonasIT\Support\AutoDoc\Exceptions\SwaggerDriverClassNotFoundException;
 use RonasIT\Support\AutoDoc\Exceptions\WrongSecurityConfigException;
 use RonasIT\Support\AutoDoc\Interfaces\SwaggerDriverInterface;
 use RonasIT\Support\AutoDoc\Traits\GetDependenciesTrait;
+use RonasIT\Support\AutoDoc\Utils\RouteUtils;
 use stdClass;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -242,7 +243,8 @@ class SwaggerService
 
     protected function getUri() : string|array|null
     {
-        $uri = $this->request->getUri();
+        // $uri = $this->request->getUri();
+		$uri = RouteUtils::getPathDefinition($this->request);
         $basePath = preg_replace("/^\//", '', $this->config['basePath']);
         $preparedUri = preg_replace("/^{$basePath}/", '', $uri);
 		$preparedUri = explode('?', $preparedUri)[0];
