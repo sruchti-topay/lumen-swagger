@@ -366,9 +366,9 @@ class SwaggerService
         $responseExample = [];
 
         if ($mimeType === 'application/json') {
-            $responseExample['example'] = ['value' => json_decode($content, true)];
+            $responseExample['example'] = json_decode($content, true);
         } elseif ($mimeType === 'application/pdf') {
-            $responseExample['example'] = ['value' => base64_encode($content)];
+            $responseExample['example'] = base64_encode($content);
 		} elseif (str_contains($mimeType, 'multipart/form-data')) {
 			$responseExample['schema'] = [
 				'type' => 'string',
@@ -392,7 +392,7 @@ class SwaggerService
             //         'contentType' => $mimeType
             //     ]
             // ];
-			$responseExample['example'] = ['value' => base64_encode($content)];
+			$responseExample['example'] = base64_encode($content);
         } else {
             $responseExample['example'] = ['value' => $content];
         }
