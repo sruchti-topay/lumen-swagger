@@ -195,7 +195,7 @@ class SwaggerService
             case 'bearer':
                 return [
                     'type' => 'http',
-                    'schema' => 'bearer',
+                    'scheme' => 'bearer',
                     'bearerFormat' => 'JWT'
                 ];
             case 'jwt':
