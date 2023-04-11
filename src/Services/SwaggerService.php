@@ -276,7 +276,9 @@ class SwaggerService
                 'name' => $key,
                 'description' => '',
                 'required' => true,
-                'type' => 'string'
+                'schema' => [
+                    'type' => 'string'
+                ]
             ];
         }
 
