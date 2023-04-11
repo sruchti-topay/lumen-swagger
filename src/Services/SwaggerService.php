@@ -192,6 +192,12 @@ class SwaggerService
     protected function generateSecurityDefinitionObject(string $type): array
     {
         switch ($type) {
+            case 'bearer':
+                return [
+                    'type' => 'http',
+                    'schema' => 'bearer',
+                    'bearerFormat' => 'JWT'
+                ];
             case 'jwt':
                 return [
                     'type' => 'apiKey',
