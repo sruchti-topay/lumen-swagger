@@ -32,9 +32,27 @@ class LocalDriver implements SwaggerDriverInterface
         return self::$data;
     }
 
+	public function convert($data)
+	{
+	   if (is_string($data)) {
+		  return mb_convert_encoding($data, 'UTF-8');
+	   } elseif (is_array($data)) {
+		  $result = [];
+		  foreach ($data as $key => $value) $result[$key] = self::convert($value);
+		  return $result;
+	   } elseif (is_object($data)) {
+		  foreach ($data as $key => $value) $data->$key = self::convert($value);
+		  return $data;
+	   } else {
+		  return $data;
+	   }
+	}
+
     public function saveData()
     {
-        $content = json_encode(mb_convert_encoding(self::$data, 'UTF-8'), \JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+		$data = $this->convert(self::$data);
+
+        $content = json_encode($data, \JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         if($content === false) {
 			$content = json_last_error_msg();
 		}
