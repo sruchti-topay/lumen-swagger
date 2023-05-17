@@ -44,7 +44,7 @@ class LocalDriver implements SwaggerDriverInterface
                 // Convert the binary string to base64
 				$data = base64_encode($data);
 				$encodingType = mb_detect_encoding($data);
-                if ($encodingType) {
+                if ($encodingType === false) {
                     throw new Exception("LocalDriver can't detect encoding for the given data");
                 }
             };
