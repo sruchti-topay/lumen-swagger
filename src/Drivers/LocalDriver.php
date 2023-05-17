@@ -34,7 +34,7 @@ class LocalDriver implements SwaggerDriverInterface
 
     public function saveData()
     {
-        $content = json_encode(self::$data, \JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $content = json_encode(mb_convert_encoding(self::$data, 'UTF-8'), \JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         if($content === false) {
 			$content = json_last_error_msg();
 		}
