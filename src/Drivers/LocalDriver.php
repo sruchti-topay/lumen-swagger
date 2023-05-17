@@ -35,7 +35,7 @@ class LocalDriver implements SwaggerDriverInterface
 	public function convert($data)
 	{
 	   if (is_string($data)) {
-		  return mb_convert_encoding($data, 'UTF-8');
+		  return mb_convert_encoding($data, 'UTF-8', mb_detect_encoding($data));
 	   } elseif (is_array($data)) {
 		  $result = [];
 		  foreach ($data as $key => $value) $result[$key] = self::convert($value);
