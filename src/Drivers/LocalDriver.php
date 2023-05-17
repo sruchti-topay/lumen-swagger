@@ -50,15 +50,17 @@ class LocalDriver implements SwaggerDriverInterface
 
     public function saveData()
     {
-		$data = $this->convert(self::$data);
+        if (!empty(self::$data)) {
+            $data = $this->convert(self::$data);
 
-        $content = json_encode($data, \JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        if($content === false) {
-			$content = json_last_error_msg();
-		}
-        file_put_contents($this->prodFilePath, $content);
+            $content = json_encode($data, \JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+            if($content === false) {
+                $content = json_last_error_msg();
+            }
+            file_put_contents($this->prodFilePath, $content);
 
-        self::$data = [];
+            self::$data = [];
+        }
     }
 
     public function getDocumentation(): array
