@@ -383,7 +383,7 @@ class SwaggerService
                 'format' => 'binary'
 			];
             $responseExample['example'] = bin2hex($content);
-		} elseif (str_contains($mimeType, 'multipart/form-data')) {
+		} elseif (str_contains($mimeType, 'multipart')) {
 			$responseExample['schema'] = [
 				'type' => 'string',
 			];
