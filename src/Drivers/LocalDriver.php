@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\AutoDoc\Drivers;
 
+use Exception;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use RonasIT\Support\AutoDoc\Exceptions\MissedProductionFilePathException;
 use RonasIT\Support\AutoDoc\Interfaces\SwaggerDriverInterface;
@@ -38,7 +39,16 @@ class LocalDriver implements SwaggerDriverInterface
             return $data;
         }
 	    if (is_string($data)) {
-            return mb_convert_encoding($data, 'UTF-8', mb_detect_encoding($data));
+            $encodingType = mb_detect_encoding($data);
+            if($encodingType === false) {
+                // Convert the binary string to base64
+				$data = base64_encode($data);
+				$encodingType = mb_detect_encoding($data);
+                if ($encodingType) {
+                    throw new Exception("LocalDriver can't detect encoding for the given data");
+                }
+            };
+            return mb_convert_encoding($data, 'UTF-8', $encodingType);
 	    } elseif (is_array($data)) {
 		    $result = [];
 		    foreach ($data as $key => $value) $result[$key] = self::convert($value);
