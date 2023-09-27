@@ -11,7 +11,7 @@ passing PHPUnit tests.
 
 ## Installation
 
-1. Install the package using the following command: `composer require imetal/lumen-swagger`
+1. Install the package using the following command: `composer require topay/lumen-swagger`
 
     > ***Note***
     > 
