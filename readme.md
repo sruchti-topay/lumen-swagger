@@ -149,7 +149,7 @@ You can use the following annotations in your request classes to customize docum
 
 You can specify the way to collect documentation by creating your own custom driver.
 
-You can find example of drivers [here](https://github.com/imetal-nl/lumen-swagger/tree/master/src/Drivers).
+You can find example of drivers [here](https://github.com/sruchti-topay/lumen-swagger/tree/master/src/Drivers).
 
 ## Contributing
 
